@@ -21,7 +21,19 @@ const budgetController = (() => {
     totals: {
       exp: 0,
       inc: 0
-    }
+    },
+    budget: 0,
+    percentage: -1
+  };
+
+  const calculateTotal = type => {
+    let sum = 0;
+
+    data.allItems[type].forEach(element => {
+      sum += element.value;
+    });
+
+    data.totals[type] = sum;
   };
 
   return {
@@ -48,6 +60,27 @@ const budgetController = (() => {
     },
     testing: () => {
       console.log(data);
+    },
+    calculateBudget: () => {
+      //calculate total incomes and expenses
+      calculateTotal("inc");
+      calculateTotal("exp");
+
+      //Calculate total budgets = totalIncome - totalExpenses
+      data.budget = data.totals.inc - data.totals.exp;
+
+      //Calculate the percentage of income that we spent
+      if (data.totals.inc > 0)
+        data.percentage = Math.round((data.totals.inc / data.totals.exp) * 100);
+      else data.percentage = -1;
+    },
+    getBudget: () => {
+      return {
+        budget: data.budget,
+        totalIncomes: data.totals.inc,
+        totalExpenses: data.totals.exp,
+        percentage: data.percentage
+      };
     }
   };
 })();
@@ -124,7 +157,15 @@ const UIController = (function() {
 // controller
 const controller = (function(budgetCtrl, uiCtrl) {
   //--------------ctrlAddItem--------------//
-  const updateBudget = () => {};
+  const updateBudget = () => {
+    //Calculate Budget
+    budgetCtrl.calculateBudget();
+
+    //Return the budget
+    let budget = budgetCtrl.getBudget();
+
+    console.log(budget);
+  };
 
   //--------------ctrlAddItem--------------//
   const ctrlAddItem = () => {
