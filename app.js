@@ -45,6 +45,9 @@ const budgetController = (() => {
 
       //Return the new element
       return newItem;
+    },
+    testing: () => {
+      console.log(data);
     }
   };
 })();
@@ -64,7 +67,7 @@ const UIController = (function() {
       return {
         type: document.querySelector(DomStrings.inputType).value,
         description: document.querySelector(DomStrings.inputDescription).value,
-        value: document.querySelector(DomStrings.inputValue).value
+        value: parseFloat(document.querySelector(DomStrings.inputValue).value)
       };
     },
     addListItem: (item, type) => {
@@ -100,8 +103,6 @@ const UIController = (function() {
       newHtml = newHtml.replace("%description%", item.description);
       newHtml = newHtml.replace("%value%", item.value);
 
-      console.log(newHtml);
-
       //Insert the html into the DOM
       document.querySelector(element).insertAdjacentHTML("beforeend", newHtml);
     },
@@ -123,26 +124,32 @@ const UIController = (function() {
 // controller
 const controller = (function(budgetCtrl, uiCtrl) {
   //--------------ctrlAddItem--------------//
+  const updateBudget = () => {};
+
+  //--------------ctrlAddItem--------------//
   const ctrlAddItem = () => {
     let input, newItem;
 
     //Get the field input data
     input = UIController.getInput();
 
-    //Add the item to the budget controller
-    newItem = budgetController.addItem(
-      input.type,
-      input.description,
-      input.value
-    );
+    if (input.description !== "" && !isNaN(input.value) && input.value > 0) {
+      //Add the item to the budget controller
+      newItem = budgetController.addItem(
+        input.type,
+        input.description,
+        input.value
+      );
 
-    //Add a new item to the UI
-    UIController.addListItem(newItem, input.type);
-    UIController.clearFields();
+      //Add a new item to the UI
+      uiCtrl.addListItem(newItem, input.type);
 
-    //Calculcate the budget
+      //Clear the fields
+      uiCtrl.clearFields();
 
-    //Display the Budget
+      //Calculcate the budget
+      updateBudget();
+    }
   };
 
   //--------------setupEventListeners--------------//
@@ -158,7 +165,6 @@ const controller = (function(budgetCtrl, uiCtrl) {
         ctrlAddItem();
       }
     });
-    console.log("Settted up!!!");
   };
 
   return {
