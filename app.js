@@ -134,7 +134,8 @@ const UIController = (function() {
     expenseLabel: ".budget__expenses--value",
     percentageLabel: ".budget__expenses--percentage",
     container: ".container",
-    expensesPercentageLabel: ".item__percentage"
+    expensesPercentageLabel: ".item__percentage",
+    dateLabel: ".budget__title--month"
   };
 
   const formatNumber = (number, type) => {
@@ -227,10 +228,13 @@ const UIController = (function() {
         budget.budget,
         budget.budget >= 0 ? "inc" : "exp"
       );
-      document.querySelector(DomStrings.incomeLabel).textContent =
-        formatNumber(budget.totalIncomes,"inc");
-      document.querySelector(DomStrings.expenseLabel).textContent =
-      formatNumber(budget.totalExpenses,"exp");
+      document.querySelector(DomStrings.incomeLabel).textContent = formatNumber(
+        budget.totalIncomes,
+        "inc"
+      );
+      document.querySelector(
+        DomStrings.expenseLabel
+      ).textContent = formatNumber(budget.totalExpenses, "exp");
       document.querySelector(DomStrings.percentageLabel).textContent =
         budget.percentage > 0 ? budget.percentage + "%" : "-";
     },
@@ -247,6 +251,25 @@ const UIController = (function() {
         current.textContent =
           percentages[index] !== -1 ? percentages[index] + "%" : "-";
       });
+    },
+    displayMonth: () => {
+      let now = new Date();
+      const months = [
+        "January",
+        "February",
+        "March",
+        "April",
+        "May",
+        "June",
+        "July",
+        "August",
+        "September",
+        "October",
+        "November",
+        "December"
+      ];
+      document.querySelector(DomStrings.dateLabel).textContent =
+        months[now.getMonth()] + " " + now.getFullYear();
     },
     getDomStrings: () => DomStrings
   };
@@ -360,6 +383,7 @@ const controller = (function(budgetCtrl, uiCtrl) {
         percentage: -1
       });
       setupEventListeners();
+      uiCtrl.displayMonth();
     }
   };
 })(budgetController, UIController);
