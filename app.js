@@ -59,7 +59,7 @@ const budgetController = (() => {
       return newItem;
     },
     testing: () => {
-      console.log(data);
+      console.log(data.allItems);
     },
     calculateBudget: () => {
       //calculate total incomes and expenses
@@ -81,7 +81,7 @@ const budgetController = (() => {
 
       let index = ids.indexOf(id);
 
-      if (index !== 1) data.allItems[type].splice(index, 1);
+      if (index !== -1) data.allItems[type].splice(index, 1);
     },
     getBudget: () => {
       return {
@@ -116,6 +116,10 @@ const UIController = (function() {
         description: document.querySelector(DomStrings.inputDescription).value,
         value: parseFloat(document.querySelector(DomStrings.inputValue).value)
       };
+    },
+    deleteListItem: selectorId => {
+      let element = document.getElementById(selectorId);
+      element.parentNode.removeChild(element);
     },
     addListItem: (item, type) => {
       let html, element;
@@ -232,10 +236,10 @@ const controller = (function(budgetCtrl, uiCtrl) {
       budgetCtrl.deleteItem(type, id);
 
       // 2.Delete the item from UI
+      uiCtrl.deleteListItem(itemID);
 
       // 3.Update and show the new budget
-
-      console.log(splitID);
+      updateBudget();
     }
   };
 
