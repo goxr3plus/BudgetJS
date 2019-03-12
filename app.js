@@ -205,7 +205,7 @@ const UIController = (function() {
       document.querySelector(DomStrings.percentageLabel).textContent =
         budget.percentage > 0 ? budget.percentage + "%" : "-";
     },
-    displayPercentages: (percentages) => {
+    displayPercentages: percentages => {
       let fields = document.querySelectorAll(
         DomStrings.expensesPercentageLabel
       );
@@ -297,6 +297,9 @@ const controller = (function(budgetCtrl, uiCtrl) {
 
       // 3.Update and show the new budget
       updateBudget();
+
+      //Update Percentages
+      updatePercentages();
     }
   };
 
