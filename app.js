@@ -216,7 +216,7 @@ const UIController = (function() {
 
       nodeListForEach(fields, function(current, index) {
         current.textContent =
-          percentages[index] !== 0 ? percentages[index] + "%" : "-";
+          percentages[index] !== -1 ? percentages[index] + "%" : "-";
       });
     },
     getDomStrings: () => DomStrings
