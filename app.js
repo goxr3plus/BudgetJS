@@ -136,6 +136,33 @@ const UIController = (function() {
     container: ".container",
     expensesPercentageLabel: ".item__percentage"
   };
+
+  const formatNumber = (number, type) => {
+    /* 
+     + or - before number
+     exactly two decimal points
+     comma separating the thousands
+
+     2310.4567 =>  + 2,310.45
+     2000 => 2,000..00
+    */
+
+    let num = Math.abs(number);
+    num = num.toFixed(2);
+
+    let numSplit = num.split(".");
+    let integer = numSplit[0];
+    if (integer.length > 3) {
+      integer =
+        integer.substr(0, integer.length - 3) +
+        "," +
+        integer.substr(integer.length - 3, 3);
+    }
+    let decimal = numSplit[1];
+
+    return (type === "exp" ? "-" : "+") + " " + integer + "." + decimal;
+  };
+
   return {
     getInput: () => {
       return {
@@ -168,7 +195,7 @@ const UIController = (function() {
                     <div class="item__description">%description%</div>
                     <div class="right clearfix">
                         <div class="item__value">%value%</div>
-                        <div class="item__percentage">21%</div>
+                        <div class="item__percentage">0%</div>
                         <div class="item__delete">
                             <button class="item__delete--btn"><i class="ion-ios-close-outline"></i></button>
                         </div>
@@ -179,7 +206,7 @@ const UIController = (function() {
       //Replace the placeholder text with some actual data
       let newHtml = html.replace("%id%", item.id);
       newHtml = newHtml.replace("%description%", item.description);
-      newHtml = newHtml.replace("%value%", item.value);
+      newHtml = newHtml.replace("%value%", formatNumber(item.value, type));
 
       //Insert the html into the DOM
       document.querySelector(element).insertAdjacentHTML("beforeend", newHtml);
@@ -196,12 +223,14 @@ const UIController = (function() {
       fieldsArray[0].focus();
     },
     displayBudget: budget => {
-      document.querySelector(DomStrings.badgetLabel).textContent =
-        budget.budget;
+      document.querySelector(DomStrings.badgetLabel).textContent = formatNumber(
+        budget.budget,
+        budget.budget >= 0 ? "inc" : "exp"
+      );
       document.querySelector(DomStrings.incomeLabel).textContent =
-        budget.totalIncomes;
+        formatNumber(budget.totalIncomes,"inc");
       document.querySelector(DomStrings.expenseLabel).textContent =
-        budget.totalExpenses;
+      formatNumber(budget.totalExpenses,"exp");
       document.querySelector(DomStrings.percentageLabel).textContent =
         budget.percentage > 0 ? budget.percentage + "%" : "-";
     },
